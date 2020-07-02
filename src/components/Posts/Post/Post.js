@@ -7,7 +7,7 @@ const Post = (props) => {
     return (
         <div className="post">
             <div className="post-pic">
-                <img src={props.postImageURL}/>
+                <img src={props.postImageURL} alt=""/>
             </div>
             <div className="post-details">
                 <div className="post-likes">

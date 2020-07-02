@@ -6,7 +6,6 @@ const Button = (props) => {
             className="button"
             style={{
                 backgroundColor:`${props.buttonBackgroundColor}`,
-                border:"none",
                 padding:"15px 32px",
                 textAlign:"center",
                 fontSize:"16px",

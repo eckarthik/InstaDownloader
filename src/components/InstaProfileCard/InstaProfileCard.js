@@ -8,10 +8,10 @@ class InstaProfileCard extends Component{
         return (
             <div className="profile-card">
             <div className="profile-pic">
-                <img src={this.props.profilePicURLHighDefinition}/> 
+                <img src={this.props.profilePicURLHighDefinition} alt=""/> 
                 </div>
                 <div className="download-button">
-                    <a href={this.props.profilePicURLHighDefinition} download="profile.jpg" target="_blank"><i className="fas fa-download"></i></a>
+                    <a href={this.props.profilePicURLHighDefinition} download="profile.jpg"><i className="fas fa-download"></i></a>
                 </div>
                 <div className="profile-info">
                     <div className="profile-name">
