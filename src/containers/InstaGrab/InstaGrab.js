@@ -31,7 +31,7 @@ class InstaGrab extends PureComponent {
         this.setState({
             userDetailsLoaded:false
         })
-        fetch("http://instagram.com/"+username+"/?__a=1")
+        fetch("https://instagram.com/"+username+"/?__a=1")
         .then(response => response.json())
         .then(response => {
             if ("graphql" in response) {
