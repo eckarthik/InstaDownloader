@@ -1,0 +1,28 @@
+.hashtags-posts {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+
+.top-hashtags,.top-hashtags-posts {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@media only screen and (max-width:768px) {
+    .top-hashtags {
+        width:100%;
+        margin-bottom:20px;
+    }
+
+    .hashtags-posts {
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+    }
+}

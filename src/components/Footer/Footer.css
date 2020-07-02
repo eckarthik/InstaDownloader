@@ -1,0 +1,8 @@
+.footer {
+    min-height: 2vh;
+    background-color: #2f3542;
+    padding:10px;
+    color:white;
+    font-family: 'Poppins',sans-serif;
+    text-align: center;
+}

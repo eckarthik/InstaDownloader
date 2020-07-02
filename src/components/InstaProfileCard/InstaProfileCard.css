@@ -1,0 +1,79 @@
+.profile-card {
+    max-width: 350px;
+    margin:auto;
+    position: relative;
+    background-color: white;
+}
+
+.profile-pic {
+    width:100%;
+    height:350px;
+}
+
+.profile-pic img {
+    width:100%;
+    height:100%;
+}
+.profile-info {
+    text-align: center;
+    color:black;
+}
+
+.profile-name {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+.profile-username {
+    text-align: center;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.profile-info {
+    min-height: 10vh;
+}
+
+.activity-data {
+    padding:10px;
+    border-top: 1px solid #dfe4ea;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 20px;
+    text-transform: uppercase;
+    text-align: center;
+}
+.activity-data div {
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-data span {
+    font-weight: bolder;
+}
+
+.download-button {
+    width:50px;
+    height:50px;
+    border-radius: 50%;
+    background-color: red;
+    top:-25px;
+    left:10px;
+    position: relative;
+}
+.download-button i {
+    position: relative;
+    left:15px;
+    top:10px;
+    color:white;
+    font-size: 20px;
+}
+
+@media only screen and (max-width:768px) {
+    .profile-card {
+        width:300px;
+    }
+}

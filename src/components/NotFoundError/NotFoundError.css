@@ -1,0 +1,11 @@
+.error {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+}
+
+.error-image i {
+    font-size: 50px;
+    color:#ffa502;
+}

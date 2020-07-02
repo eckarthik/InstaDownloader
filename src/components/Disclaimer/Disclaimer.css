@@ -1,0 +1,9 @@
+.disclaimer {
+    min-height: 2vh;
+    background-color: #ff7f50;
+    padding:60px;
+    color:white;
+    font-family: 'Poppins',sans-serif;
+    text-align: center;
+    margin-top: 50px;
+}
