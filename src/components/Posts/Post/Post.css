@@ -32,6 +32,8 @@
     font-size: 12px;
     text-overflow: clip;
     text-align: left;
+    word-wrap:break-word;
+    padding:5px;
 }
 
 .download-post-button {

@@ -28,6 +28,11 @@ class InstaGrab extends PureComponent {
     }
 
     getProfileDetails = (username) => {
+        if(username.replace(" ","").length === 0) {
+            return;
+        }
+        username = username.replace("@","")
+        window.location.hash = "profile";
         this.setState({
             userDetailsLoaded:false,
             errorOccured:false

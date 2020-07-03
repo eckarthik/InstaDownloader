@@ -4,9 +4,9 @@ import './InstaProfileCard.css';
 class InstaProfileCard extends Component{
 
     render() {
-        console.log("Profile Card Props - ",this.props)
+        console.log("Bio - ",this.props.bio)
         return (
-            <div className="profile-card">
+            <div className="profile-card" id="profile">
             <div className="profile-pic">
                 <img src={this.props.profilePicURLHighDefinition} alt=""/> 
                 </div>
@@ -21,7 +21,10 @@ class InstaProfileCard extends Component{
                         @{this.props.userName}
                     </div>
                     <div className="profile-bio">
-                        {this.props.bio}
+                        {this.props.bio.split("\n").map((line,index) => {
+                                return <p key={index}>{line}</p>
+                            })
+                        }
                     </div>
                 </div> 
                 <div className="activity-data">

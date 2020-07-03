@@ -13,6 +13,10 @@ class HashtagGrab extends Component {
     }
 
     getPostsWithHashtag = (hashtag) => {
+         if(hashtag.replace(" ","").length === 0) {
+            return;
+        }
+        hashtag = hashtag.replace("#","")
         this.setState({loadingPosts:true})
         fetch("https://www.instagram.com/explore/tags/"+hashtag+"/?__a=1")
         .then(response => response.json())
@@ -22,7 +26,7 @@ class HashtagGrab extends Component {
                 console.log(post)
                 return {
                     postImageURL:post.node.display_url,
-                    postCaption:post.node.edge_media_to_caption.edges[0].node.text,
+                    postCaption:post.node.edge_media_to_caption ? post.node.edge_media_to_caption.edges[0].node.text : "",
                     likesCount:post.node.edge_liked_by.count
                 }
             });
