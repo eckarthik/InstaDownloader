@@ -1,15 +1,18 @@
 import React, {Component} from 'react';
 import SearchBar from '../../components/SearchBar/SearchBar';
-import ListItems from '../../components/ListItems/ListItems';
+import NotFoundError from '../../components/NotFoundError/NotFoundError';
 import Posts from '../../components/Posts/Posts';
 import Loading from '../../components/Loader/Loader';
+import HowToUse from '../../components/HowToUse/HowToUse';
+
 import './HashtagGrab.css';
 
 class HashtagGrab extends Component {
     state = {
         hashtagSearchInput:"",
         hashtagTopPosts:[],
-        loadingPosts:false
+        loadingPosts:false,
+        hashTag:null
     }
 
     getPostsWithHashtag = (hashtag) => {
@@ -17,25 +20,30 @@ class HashtagGrab extends Component {
             return;
         }
         hashtag = hashtag.replace("#","")
-        this.setState({loadingPosts:true})
+        this.setState({loadingPosts:true,hashtagPosts:[]})
         fetch("https://www.instagram.com/explore/tags/"+hashtag+"/?__a=1")
         .then(response => response.json())
         .then(response => {
-            let apiResponse = response.graphql.hashtag;
-            let hashtagPosts = apiResponse.edge_hashtag_to_media.edges.map(post => {
-                console.log(post)
-                return {
-                    postImageURL:post.node.display_url,
-                    postCaption:post.node.edge_media_to_caption ? post.node.edge_media_to_caption.edges[0].node.text : "",
-                    likesCount:post.node.edge_liked_by.count
-                }
-            });
-            this.setState({hashtagTopPosts:hashtagPosts,loadingPosts:false,hashTag:hashtag})
+            if ("graphql" in response) {
+                let apiResponse = response.graphql.hashtag;
+                let hashtagPosts = apiResponse.edge_hashtag_to_media.edges.map(post => {
+                    console.log(post)
+                    return {
+                        postImageURL:post.node.display_url,
+                        postCaption:post.node.edge_media_to_caption ? post.node.edge_media_to_caption.edges[0].node.text : "",
+                        likesCount:post.node.edge_liked_by.count
+                    }
+                });
+                this.setState({hashtagTopPosts:hashtagPosts,loadingPosts:false,hashTag:hashtag,errorOccured:false})
+            }
+            else {
+                this.setState({errorOccured:true})
+            }
         })
     }
 
     componentDidMount() {
-        this.getPostsWithHashtag("DarkSeason3");
+        //this.getPostsWithHashtag("DarkSeason3");
     }
 
     onSearchInputChange = (event) => {
@@ -45,6 +53,23 @@ class HashtagGrab extends Component {
     }
 
     render() {
+
+        let howToUseSteps = [
+            {
+                icon:"fas fa-hashtag",
+                stepDescription:"Enter the hashtag in the search box"
+            },
+            {
+                icon:"fas fa-search",
+                stepDescription:"Click on search and wait for the search to complete"
+            },
+            {
+                icon:"fas fa-photo-video",
+                stepDescription:"Click on the download button to download the HD profile picture"
+            }
+        ]
+
+
         return (
             <React.Fragment>
                 <SearchBar 
@@ -55,12 +80,15 @@ class HashtagGrab extends Component {
                     />
                 <div className="hashtags-posts">
                     <div className="top-hashtag-posts">
-                        <p style={{textAlign:"center"}}>Search results for <b>#{this.state.hashTag}</b></p>
-                        {this.state.loadingPosts ? <Loading loadingMessage="Loading Posts... Please wait.."/> : <Posts posts={this.state.hashtagTopPosts}/>}
+                        {
+                            this.state.errorOccured ? <NotFoundError errorMessage="No posts found for the given hashtag"/> :
+                            this.state.loadingPosts ? <Loading loadingMessage="Loading Posts... Please wait.."/> : <Posts hashTag={this.state.hashTag} posts={this.state.hashtagTopPosts}/>
+                        }
                     </div>
-                    <div className="top-hashtags">
+                    <HowToUse steps={howToUseSteps}/>
+                    {/* <div className="top-hashtags">
                         <ListItems/>
-                    </div>
+                    </div> */}
                     
                 </div>
             </React.Fragment>

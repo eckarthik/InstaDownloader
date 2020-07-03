@@ -14,10 +14,10 @@ class Navbar extends Component {
     navLinks = document.querySelectorAll(".nav-links li")
 
     componentDidMount() {
-        window.addEventListener("scroll",this.closeSidebarOnScroll)
+        window.addEventListener("scroll",this.closeSidebar)
     }
     
-    closeSidebarOnScroll = () => {
+    closeSidebar = () => {
         if(this.state.showSideBar) {
             this.showSideBar()
         }
@@ -48,20 +48,20 @@ class Navbar extends Component {
         return (
             <nav>
                 <div className="logo">
-                    <h4>Insta Downloader</h4>
+                    <h4><i className="fab fa-instagram"></i> InstaDown</h4>
                 </div>
                 <ul ref={this.navLinksRef} className={activeClasses.join(' ')}>
                     <li>
-                        <Link to="/" onClick={this.showSideBar}>Home</Link>
+                        <Link to="/" onClick={this.closeSidebar}>Home</Link>
                     </li>
                     <li>
-                        <Link to="/" onClick={this.showSideBar}>Post-Download</Link>
+                        <Link to="/postDownload" onClick={this.closeSidebar}>Post-Download</Link>
                     </li>
                     <li>
-                        <Link to="/hashtags" onClick={this.showSideBar}>Hashtags</Link>
+                        <Link to="/hashtags" onClick={this.closeSidebar}>Hashtags</Link>
                     </li>
                     <li>
-                        <Link to="/" onClick={this.showSideBar}>IGTV</Link>
+                        <Link to="/" onClick={this.closeSidebar}>IGTV</Link>
                     </li>
                 </ul>
                 <div className="burger" onClick={this.showSideBar}>

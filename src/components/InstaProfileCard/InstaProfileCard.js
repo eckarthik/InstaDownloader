@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './InstaProfileCard.css';
+import * as utils from '../../utils';
 
 class InstaProfileCard extends Component{
 
@@ -10,8 +11,8 @@ class InstaProfileCard extends Component{
             <div className="profile-pic">
                 <img src={this.props.profilePicURLHighDefinition} alt=""/> 
                 </div>
-                <div className="download-button">
-                    <a href={this.props.profilePicURLHighDefinition} download="profile.jpg"><i className="fas fa-download"></i></a>
+                <div className="download-button" onClick={() => utils.downloadImage(this.props.profilePicURLHighDefinition,"profile_pic.png")}>
+                    <span><i className="fas fa-download"></i></span>
                 </div>
                 <div className="profile-info">
                     <div className="profile-name">

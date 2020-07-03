@@ -16,6 +16,7 @@ const Button = (props) => {
                 borderRadius:"2%",
                 
             }}
+            onClick={props.clicked}
         >{props.buttonText}</button>
     );
 }

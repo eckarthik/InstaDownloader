@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '../../Button/Button';
+import * as utils from '../../../utils';
 
 import './Post.css';
 
@@ -22,7 +23,9 @@ const Post = (props) => {
                         buttonText="Download Post" 
                         buttonBackgroundColor="white" 
                         buttonBorderColor="red" 
-                        buttonTextColor="black"/>
+                        buttonTextColor="black"
+                        clicked={() => utils.downloadImage(props.postImageURL,"post.png")}
+                        />
             </div>
         </div>
     );
