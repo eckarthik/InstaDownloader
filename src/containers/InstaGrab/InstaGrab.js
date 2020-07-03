@@ -29,7 +29,8 @@ class InstaGrab extends PureComponent {
 
     getProfileDetails = (username) => {
         this.setState({
-            userDetailsLoaded:false
+            userDetailsLoaded:false,
+            errorOccured:false
         })
         fetch("https://instagram.com/"+username+"/?__a=1")
         .then(response => response.json())
@@ -49,7 +50,8 @@ class InstaGrab extends PureComponent {
                         followersCount:user.edge_followed_by.count,
                         postsCount:user.edge_owner_to_timeline_media.count
                     },
-                    userDetailsLoaded:true
+                    userDetailsLoaded:true,
+                    errorOccured:false
                 })
             }
             else {

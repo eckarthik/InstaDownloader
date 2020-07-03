@@ -13,6 +13,16 @@ class Navbar extends Component {
     navLinksRef = React.createRef();
     navLinks = document.querySelectorAll(".nav-links li")
 
+    componentDidMount() {
+        window.addEventListener("scroll",this.closeSidebarOnScroll)
+    }
+    
+    closeSidebarOnScroll = () => {
+        if(this.state.showSideBar) {
+            this.showSideBar()
+        }
+    }
+
 
     showSideBar = () => {
         this.setState({showSideBar:!this.state.showSideBar})
@@ -42,16 +52,16 @@ class Navbar extends Component {
                 </div>
                 <ul ref={this.navLinksRef} className={activeClasses.join(' ')}>
                     <li>
-                        <Link to="/">Home</Link>
+                        <Link to="/" onClick={this.showSideBar}>Home</Link>
                     </li>
                     <li>
-                        <Link to="/">Post-Download</Link>
+                        <Link to="/" onClick={this.showSideBar}>Post-Download</Link>
                     </li>
                     <li>
-                        <Link to="/hashtags">Hashtags</Link>
+                        <Link to="/hashtags" onClick={this.showSideBar}>Hashtags</Link>
                     </li>
                     <li>
-                        <Link to="/">IGTV</Link>
+                        <Link to="/" onClick={this.showSideBar}>IGTV</Link>
                     </li>
                 </ul>
                 <div className="burger" onClick={this.showSideBar}>
