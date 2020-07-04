@@ -15,6 +15,7 @@ class Posts extends Component {
         return (
             <React.Fragment>
                 {this.props.posts.length>=1 ? this.props.header : ""}
+                
                 <div className="posts">
                     {
                         this.props.posts.map((post,index) => {
