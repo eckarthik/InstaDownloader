@@ -1,23 +1,31 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Post from './Post/Post';
 import './Posts.css';
 
-const Posts = (props) => {
-    
-    let header = props.posts.length > 1 ? <p style={{textAlign:"center"}}>Search results for <b>#{props.hashTag}</b></p> : null
-    return (
-        <React.Fragment>
-            {header}
-            <div className="posts">
-                {
-                    props.posts.map((post,index) => {
-                        return <Post {...post} key={index}/>
-                    })
-                }
-            </div>
-        </React.Fragment>
-        
-    );
+class Posts extends Component {
+    shouldComponentUpdate(nextProps,nextState) {
+        if(nextProps.posts === this.props.posts) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    render() {
+        return (
+            <React.Fragment>
+                {this.props.posts.length>=1 ? this.props.header : ""}
+                <div className="posts">
+                    {
+                        this.props.posts.map((post,index) => {
+                            return <Post {...post} key={index}/>
+                        })
+                    }
+                </div>
+            </React.Fragment>
+            
+        );
+    }
 }
 
 export default Posts;

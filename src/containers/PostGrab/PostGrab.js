@@ -4,6 +4,8 @@ import NotFoundError from '../../components/NotFoundError/NotFoundError';
 import Posts from '../../components/Posts/Posts';
 import Loading from '../../components/Loader/Loader';
 import HowToUse from '../../components/HowToUse/HowToUse';
+import {obtainPostUniqueLinkFromURL} from '../../utils';
+import * as constants from '../../constants';
 
 import './PostGrab.css';
 
@@ -12,35 +14,66 @@ class PostGrab extends Component {
         postSearchInput:"",
         postLinkTopPosts:[],
         loadingPosts:false,
-        hashTag:null
+        hashTag:null,
+        multipleImagesFound:false
     }
 
     getPostDetails = (postLink) => {
          if(postLink.replace(" ","").length === 0) {
             return;
         }
-        postLink = postLink.replace("#","")
+        postLink = obtainPostUniqueLinkFromURL(postLink)
+        console.log("Post Link = ",postLink)
         this.setState({loadingPosts:true,postLinkPosts:[]})
-        fetch(postLink+"/?__a=1")
+        fetch(encodeURI("https://www.instagram.com/p/"+postLink+"/?__a=1"))
         .then(response => response.json())
         .then(response => {
+            console.log(response)
             if ("graphql" in response) {
-                let apiResponse = response.graphql.shortcode_media;
-                let postDetails =  {
-                    postImageURL:apiResponse.display_url,
-                    postCaption:apiResponse.edge_media_to_caption ? apiResponse.edge_media_to_caption.edges[0].node.text : "",
-                    likesCount:apiResponse.edge_media_preview_like.count
+                if("edge_sidecar_to_children" in response.graphql.shortcode_media) {
+                    //Multiple Photos found for single post
+                    let apiResponse = response.graphql.shortcode_media;
+                    let multiplePosts = apiResponse.edge_sidecar_to_children.edges;
+                    let posts = []
+                    for(let i = 0; i < multiplePosts.length;i++) {
+                        let post = multiplePosts[i].node
+                        let postItemURL = post.is_video ? post.video_url : post.display_url
+                        let postDetails = {
+                            postImageURL:postItemURL,
+                            postCaption:null,
+                            likesCount:null,
+                            postOwnerUsername:null,
+                            isVideo:post.is_video
+                        }
+                        posts.push(postDetails)
+                    }
+                    this.setState({postLinkTopPosts:posts,loadingPosts:false,postLink:postLink,errorOccured:false,multipleImagesFound:true})
+
                 }
-                this.setState({postLinkTopPosts:[postDetails],loadingPosts:false,postLink:postLink,errorOccured:false})
+                else {
+                    //If only single post is present
+                    let apiResponse = response.graphql.shortcode_media;
+                    let postItemURL = apiResponse.is_video ? apiResponse.video_url : apiResponse.display_url
+                    let postDetails =  {
+                        postImageURL:postItemURL,
+                        postCaption:apiResponse.edge_media_to_caption.edges.length >=1 ? apiResponse.edge_media_to_caption.edges[0].node.text : "",
+                        likesCount:apiResponse.edge_media_preview_like.count,
+                        postOwnerUsername:apiResponse.owner.username,
+                        isVideo:apiResponse.is_video
+                    }
+                    this.setState({postLinkTopPosts:[postDetails],loadingPosts:false,postLink:postLink,errorOccured:false,multipleImagesFound:false})
+                }
+                
             }
             else {
-                this.setState({errorOccured:true})
+                console.log("GraphQL not found")
+                this.setState({errorOccured:true,loadingPosts:true})
             }
         })
-    }
-
-    componentDidMount() {
-        //this.getPostsWithHashtag("DarkSeason3");
+        .catch(error => {
+            console.log("SOme other error = "+error)
+            this.setState({errorOccured:true,loadingPosts:true})
+        })
     }
 
     onSearchInputChange = (event) => {
@@ -50,23 +83,14 @@ class PostGrab extends Component {
     }
 
     render() {
-
-        let howToUseSteps = [
-            {
-                icon:"fas fa-link",
-                stepDescription:"Enter the postlink in the search box"
-            },
-            {
-                icon:"fas fa-search",
-                stepDescription:"Click on search and wait for the search to complete"
-            },
-            {
-                icon:"fas fa-photo-video",
-                stepDescription:"Click on the download button to download the post"
-            }
-        ]
-
-
+        let searchResultHeader = null;
+        if(this.state.multipleImagesFound) {
+            searchResultHeader = <p style={{textAlign:"center"}}>Multiple results found for the given post link</p>
+        }
+        else {
+            searchResultHeader = this.state.postLinkTopPosts.length >= 1 ? <p style={{textAlign:"center"}}>Search results for given post link</p> : null
+        }
+        let howToUseSteps = constants.postGrabSteps;
         return (
             <React.Fragment>
                 <SearchBar 
@@ -79,14 +103,13 @@ class PostGrab extends Component {
                     <div className="top-hashtag-posts">
                         {
                             this.state.errorOccured ? <NotFoundError errorMessage="No posts found for the given link"/> :
-                            this.state.loadingPosts ? <Loading loadingMessage="Loading Posts... Please wait.."/> : <Posts hashTag={this.state.hashTag} posts={this.state.postLinkTopPosts}/>
+                            this.state.loadingPosts ? <Loading loadingMessage="Loading Posts... Please wait.."/> : <Posts header={searchResultHeader} hashTag={this.state.hashTag} posts={this.state.postLinkTopPosts}/>
                         }
                     </div>
                     <HowToUse steps={howToUseSteps}/>
                     {/* <div className="top-hashtags">
                         <ListItems/>
-                    </div> */}
-                    
+                    </div> */}  
                 </div>
             </React.Fragment>
 

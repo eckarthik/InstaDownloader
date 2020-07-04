@@ -4,6 +4,7 @@ import InstaProfileCard from '../../components/InstaProfileCard/InstaProfileCard
 import Loader from '../../components/Loader/Loader';
 import NotFoundError from '../../components/NotFoundError/NotFoundError';
 import HowToUse from '../../components/HowToUse/HowToUse';
+import * as constants from '../../constants';
 
 class InstaGrab extends PureComponent {
 
@@ -44,7 +45,6 @@ class InstaGrab extends PureComponent {
         .then(response => {
             if ("graphql" in response) {
                 let user = response.graphql.user
-                console.log("User Details API Response - ",user)
                 this.setState({
                     userDetails:{
                         fullName:user.full_name,
@@ -67,6 +67,9 @@ class InstaGrab extends PureComponent {
             } 
            
         })
+        .catch(error => {
+            this.setState({errorOccured:true,dataLoading:false})
+        })
     }
 
     onUsernameInputChange = (event) => {
@@ -76,20 +79,7 @@ class InstaGrab extends PureComponent {
     }
 
     render() {
-        let howToUseSteps = [
-            {
-                icon:"fas fa-keyboard",
-                stepDescription:"Enter the Instagram username in the search box"
-            },
-            {
-                icon:"fas fa-search",
-                stepDescription:"Click on search and wait for the search to complete"
-            },
-            {
-                icon:"fas fa-photo-video",
-                stepDescription:"Click on the download button to download the HD profile picture"
-            }
-        ]
+        let howToUseSteps = constants.profileGrabSteps;
         return (
             <React.Fragment>
                 <SearchBar 

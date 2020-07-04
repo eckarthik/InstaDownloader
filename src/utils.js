@@ -1,5 +1,4 @@
 const downloadImage = (imageLink,fileName) => {
-    console.log(imageLink)
     fetch(imageLink)
     .then(response => response.blob())
     .then(response => {
@@ -13,4 +12,18 @@ const downloadImage = (imageLink,fileName) => {
     })
 }
 
-export {downloadImage};
+const obtainPostUniqueLinkFromURL = (url) => {
+    let parts = url.split("/")
+    let postLink = null
+    for(let i = 0; i< parts.length; i++) {
+        if(parts[i] === 'p')
+        {
+            postLink = parts[i+1];
+            break
+        }
+    }
+    return postLink
+
+}
+
+export {downloadImage,obtainPostUniqueLinkFromURL};

@@ -18,7 +18,8 @@
 
 .post-details {
     background-color: white;
-    padding:10px;
+    padding-left:10px;
+    padding-top:3px;
     text-align: center;
 }
 
@@ -34,6 +35,17 @@
     text-align: left;
     word-wrap:break-word;
     padding:5px;
+}
+
+.post-owner-username {
+    font-size: 13px;
+    text-overflow: clip;
+    text-align: left;
+    word-wrap:break-word;
+    padding-left:5px;
+    padding-top:5px;
+    color:#3e485a;
+
 }
 
 .download-post-button {

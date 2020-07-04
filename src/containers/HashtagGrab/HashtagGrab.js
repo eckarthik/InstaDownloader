@@ -4,6 +4,7 @@ import NotFoundError from '../../components/NotFoundError/NotFoundError';
 import Posts from '../../components/Posts/Posts';
 import Loading from '../../components/Loader/Loader';
 import HowToUse from '../../components/HowToUse/HowToUse';
+import * as constants from '../../constants';
 
 import './HashtagGrab.css';
 
@@ -15,31 +16,35 @@ class HashtagGrab extends Component {
         hashTag:null
     }
 
-    getPostsWithHashtag = (hashtag) => {
+    async getPostsWithHashtag(hashtag) {
          if(hashtag.replace(" ","").length === 0) {
             return;
         }
         hashtag = hashtag.replace("#","")
         this.setState({loadingPosts:true,hashtagPosts:[]})
-        fetch("https://www.instagram.com/explore/tags/"+hashtag+"/?__a=1")
-        .then(response => response.json())
-        .then(response => {
-            if ("graphql" in response) {
-                let apiResponse = response.graphql.hashtag;
-                let hashtagPosts = apiResponse.edge_hashtag_to_media.edges.map(post => {
-                    console.log(post)
-                    return {
-                        postImageURL:post.node.display_url,
-                        postCaption:post.node.edge_media_to_caption ? post.node.edge_media_to_caption.edges[0].node.text : "",
-                        likesCount:post.node.edge_liked_by.count
-                    }
-                });
-                this.setState({hashtagTopPosts:hashtagPosts,loadingPosts:false,hashTag:hashtag,errorOccured:false})
+        let posts = []
+        const firstResponse = await fetch("https://www.instagram.com/explore/tags/"+hashtag+"/?__a=1").then(response => response.json())
+        const apiResponse = firstResponse.graphql.hashtag;
+        const hashtagPosts = apiResponse.edge_hashtag_to_media.edges.splice(1,15);
+        for(let post of hashtagPosts) {
+            let postItemURL = null
+            if(post.node.is_video) {
+                let postKey = post.node.shortcode;
+                const secondResponse = await fetch("https://www.instagram.com/p/"+postKey+"/?__a=1").then(response => response.json())
+                postItemURL = secondResponse.graphql.shortcode_media.video_url
             }
             else {
-                this.setState({errorOccured:true})
+                postItemURL = post.node.display_url
             }
-        })
+            posts.push({
+                postImageURL:postItemURL,
+                postCaption:post.node.edge_media_to_caption ? post.node.edge_media_to_caption.edges[0].node.text : "",
+                likesCount:post.node.edge_liked_by.count,
+                postOwnerUsername:null,
+                isVideo:post.node.is_video
+            })
+        }
+        this.setState({hashtagTopPosts:posts,loadingPosts:false,hashTag:hashtag,errorOccured:false})
     }
 
     componentDidMount() {
@@ -53,23 +58,8 @@ class HashtagGrab extends Component {
     }
 
     render() {
-
-        let howToUseSteps = [
-            {
-                icon:"fas fa-hashtag",
-                stepDescription:"Enter the hashtag in the search box"
-            },
-            {
-                icon:"fas fa-search",
-                stepDescription:"Click on search and wait for the search to complete"
-            },
-            {
-                icon:"fas fa-photo-video",
-                stepDescription:"Click on the download button to download the HD profile picture"
-            }
-        ]
-
-
+        let searchResultHeader = <p style={{textAlign:"center"}}>Search results for <b>#{this.state.hashTag}</b></p>
+        let howToUseSteps = constants.hashtagGrabSteps;
         return (
             <React.Fragment>
                 <SearchBar 
@@ -82,7 +72,7 @@ class HashtagGrab extends Component {
                     <div className="top-hashtag-posts">
                         {
                             this.state.errorOccured ? <NotFoundError errorMessage="No posts found for the given hashtag"/> :
-                            this.state.loadingPosts ? <Loading loadingMessage="Loading Posts... Please wait.."/> : <Posts hashTag={this.state.hashTag} posts={this.state.hashtagTopPosts}/>
+                            this.state.loadingPosts ? <Loading loadingMessage="Loading Posts... Please wait.."/> : <Posts header={searchResultHeader} hashTag={this.state.hashTag} posts={this.state.hashtagTopPosts}/>
                         }
                     </div>
                     <HowToUse steps={howToUseSteps}/>
