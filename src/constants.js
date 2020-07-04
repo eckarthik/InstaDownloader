@@ -43,4 +43,19 @@ let postGrabSteps = [
     }
 ]
 
-export {profileGrabSteps,hashtagGrabSteps,postGrabSteps}
+let igtvGrabSteps = [
+    {
+        icon:"fas fa-video",
+        stepDescription:"Enter the IGTV video in the search box"
+    },
+    {
+        icon:"fas fa-search",
+        stepDescription:"Click on search and wait for the search to complete"
+    },
+    {
+        icon:"fas fa-photo-video",
+        stepDescription:"Click on the download button to download the post"
+    }
+]
+
+export {profileGrabSteps,hashtagGrabSteps,postGrabSteps,igtvGrabSteps}

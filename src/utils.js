@@ -26,4 +26,19 @@ const obtainPostUniqueLinkFromURL = (url) => {
 
 }
 
-export {downloadImage,obtainPostUniqueLinkFromURL};
+
+const obtainIGTVUniqueLinkFromURL = (url) => {
+    let parts = url.split("/")
+    let postLink = null
+    for(let i = 0; i< parts.length; i++) {
+        if(parts[i] === 'tv')
+        {
+            postLink = parts[i+1];
+            break
+        }
+    }
+    return postLink
+
+}
+
+export {downloadImage,obtainPostUniqueLinkFromURL,obtainIGTVUniqueLinkFromURL};

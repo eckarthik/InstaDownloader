@@ -61,7 +61,7 @@ class Navbar extends Component {
                         <Link to="/hashtags" onClick={this.closeSidebar}>Hashtags</Link>
                     </li>
                     <li>
-                        <Link to="/" onClick={this.closeSidebar}>IGTV</Link>
+                        <Link to="/igtv" onClick={this.closeSidebar}>IGTV</Link>
                     </li>
                 </ul>
                 <div className="burger" onClick={this.showSideBar}>
