@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
-import SearchBar from '../../components/SearchBar/SearchBar';
 import NotFoundError from '../../components/NotFoundError/NotFoundError';
 import Posts from '../../components/Posts/Posts';
 import Loading from '../../components/Loader/Loader';
-import HowToUse from '../../components/HowToUse/HowToUse';
 import {obtainIGTVUniqueLinkFromURL} from '../../utils';
-import * as constants from '../../constants';
 
 class IGTVGrab extends Component {
 
@@ -51,10 +48,14 @@ class IGTVGrab extends Component {
         })
     }
 
-    onSearchInputChange = (event) => {
-        this.setState({
-            igtvSearchInput:event.target.value
-        })
+    componentDidMount() {
+        this.getPostDetails(this.props.postLink);
+    }
+
+    componentDidUpdate(prevProps) {
+        if(this.props.postLink !== prevProps.postLink) {
+            this.getPostDetails(this.props.postLink);
+        }
     }
 
     render() {
@@ -65,26 +66,15 @@ class IGTVGrab extends Component {
         else {
             searchResultHeader = this.state.postLinkTopPosts.length >= 1 ? <p style={{textAlign:"center"}}>Search results for given IGTV link</p> : null
         }
-        let howToUseSteps = constants.igtvGrabSteps;
         return (
             <React.Fragment>
-                <SearchBar 
-                    searchBoxPlaceHolder="Enter the IGTV video link"
-                    value={this.state.postSearchInput} 
-                    clicked={() => this.getPostDetails(this.state.igtvSearchInput)} 
-                    changed={(event) => this.onSearchInputChange(event)}
-                    />
                 <div className="hashtags-posts">
                     <div className="top-hashtag-posts">
                         {
                             this.state.errorOccured ? <NotFoundError errorMessage="No posts found for the given link"/> :
-                            this.state.loadingPosts ? <Loading loadingMessage="Loading Posts... Please wait.."/> : <Posts header={searchResultHeader} hashTag={this.state.hashTag} posts={this.state.postLinkTopPosts}/>
+                            this.state.loadingPosts ? <Loading loadingMessage="Loading IGTV Video... Please wait.."/> : <Posts header={searchResultHeader} hashTag={this.state.hashTag} posts={this.state.postLinkTopPosts}/>
                         }
                     </div>
-                    <HowToUse steps={howToUseSteps}/>
-                    {/* <div className="top-hashtags">
-                        <ListItems/>
-                    </div> */}  
                 </div>
             </React.Fragment>
 

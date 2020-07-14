@@ -55,13 +55,13 @@ class Navbar extends Component {
                         <Link to="/" onClick={this.closeSidebar}>Home</Link>
                     </li>
                     <li>
-                        <Link to="/postDownload" onClick={this.closeSidebar}>Post-Download</Link>
+                        <Link to="#" onClick={this.closeSidebar}>Trending Profiles</Link>
                     </li>
                     <li>
-                        <Link to="/hashtags" onClick={this.closeSidebar}>Hashtags</Link>
+                        <Link to="#" onClick={this.closeSidebar}>Top Hashtags</Link>
                     </li>
                     <li>
-                        <Link to="/igtv" onClick={this.closeSidebar}>IGTV</Link>
+                        <Link to="#" onClick={this.closeSidebar}>IGTV</Link>
                     </li>
                 </ul>
                 <div className="burger" onClick={this.showSideBar}>

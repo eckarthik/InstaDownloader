@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
-import SearchBar from '../../components/SearchBar/SearchBar';
 import NotFoundError from '../../components/NotFoundError/NotFoundError';
 import Posts from '../../components/Posts/Posts';
 import Loading from '../../components/Loader/Loader';
-import HowToUse from '../../components/HowToUse/HowToUse';
 import Button from '../../components/Button/Button';
-import * as constants from '../../constants';
 
 import './HashtagGrab.css';
 
@@ -58,32 +55,25 @@ class HashtagGrab extends Component {
         
     }
 
-    componentDidMount() {
-        //this.getPostsWithHashtag("DarkSeason3");
+    componentDidUpdate(prevProps) {
+        if(this.props.hashtag !== prevProps.hashtag) {
+            this.getPostsWithHashtag(this.props.hashtag);
+        }
     }
 
-    onSearchInputChange = (event) => {
-        this.setState({
-            hashtagSearchInput:event.target.value
-        })
+    componentDidMount() {
+        this.getPostsWithHashtag(this.props.hashtag);
     }
 
     render() {
         let searchResultHeader = <p style={{textAlign:"center"}}>Search results for <b>#{this.state.hashTag}</b></p>
-        let howToUseSteps = constants.hashtagGrabSteps;
         return (
             <React.Fragment>
-                <SearchBar 
-                    searchBoxPlaceHolder="Enter a Hashtag.. For example #DarkNetflix"
-                    value={this.state.hashtagSearchInput} 
-                    clicked={() => this.getPostsWithHashtag(this.state.hashtagSearchInput)} 
-                    changed={(event) => this.onSearchInputChange(event)}
-                    />
                 <div className="hashtags-posts">
                     <div className="top-hashtag-posts">
                         {
                             this.state.errorOccured ? <NotFoundError errorMessage="No posts found for the given hashtag"/> :
-                            this.state.loadingPosts && this.state.endPostNumber === 0 ? <Loading loadingMessage="Loading Posts... Please wait.."/> : 
+                            this.state.loadingPosts && this.state.endPostNumber === 0 ? <Loading loadingMessage="Loading Posts for hashtag... Please wait.."/> : 
                                 <Posts header={searchResultHeader} hashTag={this.state.hashTag} posts={this.state.hashtagTopPosts}/>
  
                         }
@@ -101,12 +91,6 @@ class HashtagGrab extends Component {
                             clicked={() => this.getPostsWithHashtag(this.state.hashTag)}
                         />
                     </div> : null}
-
-                   
-                    <HowToUse steps={howToUseSteps}/>
-                    {/* <div className="top-hashtags">
-                        <ListItems/>
-                    </div> */}
                     
                 </div>
             </React.Fragment>

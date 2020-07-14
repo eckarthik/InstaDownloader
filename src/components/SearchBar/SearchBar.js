@@ -7,7 +7,7 @@ const SearchBar = (props) => {
             <div className="search-bar">
                 <div className="info">
                     <p>Insta Downloader</p>
-                    <p>Download HD Instagram Profile Pictures</p>
+                    <p>Your one stop site to download stuff from Instagram</p>
                 </div>
                 <div className="features">
                     <div className="feature">
@@ -15,7 +15,7 @@ const SearchBar = (props) => {
                             <i className="fas fa-hashtag"></i>
                         </div>
                         <div className="feature-detail">
-                            Download Posts by searching a Hashatg
+                            Download Posts by searching a hashatg
                         </div>
                     </div>
 
@@ -24,7 +24,7 @@ const SearchBar = (props) => {
                             <i className="fas fa-file-image"></i>
                         </div>
                         <div className="feature-detail">
-                            Download HD Profile Picture
+                            Download HD profile picture
                         </div>
                     </div>
 
@@ -39,7 +39,7 @@ const SearchBar = (props) => {
                 </div>
             </div>
             <div className="input-box">
-                <input type="text" placeholder={props.searchBoxPlaceHolder} onChange={(event) => props.changed(event)} onKeyPress={(event) => {return event.key === "Enter" ? props.clicked() : ""}} value={props.value}></input>
+                <input type="text" placeholder={props.searchBoxPlaceHolder} onKeyPress={(event) => {return event.key === "Enter" ? props.clicked() : ""}} value={props.value}></input>
                 <button onClick={props.clicked}>Search</button>
             </div>
         </React.Fragment>

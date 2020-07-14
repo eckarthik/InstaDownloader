@@ -1,100 +1,68 @@
 import React, { PureComponent } from 'react';
 import SearchBar from '../../components/SearchBar/SearchBar';
-import InstaProfileCard from '../../components/InstaProfileCard/InstaProfileCard';
-import Loader from '../../components/Loader/Loader';
-import NotFoundError from '../../components/NotFoundError/NotFoundError';
 import HowToUse from '../../components/HowToUse/HowToUse';
 import * as constants from '../../constants';
+import HashtagGrab from '../HashtagGrab/HashtagGrab';
+import ProfileGrab from '../ProfileGrab/ProfileGrab';
+import PostGrab from '../PostGrab/PostGrab';
+import IGTVGrab from '../IGTVGrab/IGTVGrab';
 
 class InstaGrab extends PureComponent {
 
     state = {
-        usernameInput:"",
-        userDetails:{
-            fullName:"",
-            bio:"",
-            externalURL:"",
-            profilePicURL:"",
-            profilePicURLHighDefinition:"",
-            followersCount:"",
-            followingCount:"",
-            postsCount:"",
-            userName:""
-        },
-        userDetailsLoaded:false,
-        errorOccured:false,
-        dataLoading:false
+        searchInput:"",
+        searchType:null
     }
 
-    componentDidMount() {
-        //this.getProfileDetails("virat.kohli")
-    }
-
-    getProfileDetails = (username) => {
-        if(username.replace(" ","").length === 0) {
-            return;
+    onSearchSubmit = () => {
+        let search = document.getElementsByTagName("input")[0].value;
+        if(search.charAt(0) === "#") {
+            console.log("User is searching for a hashtag")
+            this.setState({searchType:"hashtag",searchInput:search})
         }
-        username = username.replace("@","")
-        this.setState({
-            userDetailsLoaded:false,
-            errorOccured:false,
-            dataLoading:true
-        })
-        fetch("https://instagram.com/"+username+"/?__a=1")
-        .then(response => response.json())
-        .then(response => {
-            if ("graphql" in response) {
-                let user = response.graphql.user
-                this.setState({
-                    userDetails:{
-                        fullName:user.full_name,
-                        userName:user.username,
-                        bio:user.biography,
-                        externalURL:user.external_url,
-                        profilePicURL:user.profile_pic_url,
-                        profilePicURLHighDefinition:user.profile_pic_url_hd,
-                        followingCount:user.edge_follow.count,
-                        followersCount:user.edge_followed_by.count,
-                        postsCount:user.edge_owner_to_timeline_media.count
-                    },
-                    userDetailsLoaded:true,
-                    errorOccured:false,
-                    dataLoading:false
-                })
-            }
-            else {
-                this.setState({errorOccured:true,dataLoading:false})
-            } 
-           
-        })
-        .catch(error => {
-            this.setState({errorOccured:true,dataLoading:false})
-        })
+        else if(search.search(".com/p/") !== -1) {
+            console.log("User is searching for a post")
+            this.setState({searchType:"post",searchInput:search})
+        }
+        else if(search.search(".com/tv/") !== -1) {
+            console.log("User is searching for a IGTV video")
+            this.setState({searchType:"igtv",searchInput:search})
+        }
+        else {
+            console.log("User is searching for a profile")
+            this.setState({searchType:"profile",searchInput:search})
+        }
     }
 
-    onUsernameInputChange = (event) => {
-        this.setState({
-            usernameInput:event.target.value
-        })
-    }
 
     render() {
-        let howToUseSteps = constants.profileGrabSteps;
+        let componentToRender = null;
+        console.log("Search Type = ",this.state.searchType)
+        if(this.state.searchType === "hashtag") {
+            componentToRender = <HashtagGrab hashtag={this.state.searchInput}/>
+        }
+        else if(this.state.searchType === "post") {
+            componentToRender =  <PostGrab postLink={this.state.searchInput}/>;
+        }
+        else if(this.state.searchType === "igtv") {
+            componentToRender =  <IGTVGrab postLink={this.state.searchInput}/>;
+        }
+        else if(this.state.searchType === "profile") {
+            componentToRender = <ProfileGrab username={this.state.searchInput}/>
+        }
+        else {
+            componentToRender = null;
+        }
+        let howToUseSteps = constants.howToUseSteps;
         return (
             <React.Fragment>
                 <SearchBar 
-                    searchBoxPlaceHolder="Enter Instagram Username" 
-                    value={this.state.usernameInput} 
-                    clicked={() => this.getProfileDetails(this.state.usernameInput)} 
-                    changed={(event) => this.onUsernameInputChange(event)}
+                    searchBoxPlaceHolder="Enter Instagram Username or #hashtag or post link" 
+                    // value={this.state.searchInput} 
+                    clicked={this.onSearchSubmit} 
+                    // changed={(event) => this.onUsernameInputChange(event)}
                     />
-                {this.state.dataLoading ? <Loader loadingMessage="Fetching profile.. Please wait"/> : null}
-                {
-                    
-                    this.state.errorOccured ? <NotFoundError errorMessage="The profile you were searching for is invalid"/> :
-                    this.state.userDetailsLoaded ? <InstaProfileCard {...this.state.userDetails}/> : null
-
-                }
+                {componentToRender}
                 <HowToUse steps={howToUseSteps}/>
             </React.Fragment>
     
